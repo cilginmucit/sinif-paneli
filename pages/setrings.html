@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr" >
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../maincss.css">
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+    </style>
+</head>
+<body>
+
+
+    <table class="students" id="table_in_setrings">
+        <tbody>
+            <tr id="setrings_grup_for_theme">
+                <td>
+                    <div>koyu tema</div>
+                    <select setring-name="darktheam" likey-be="select">
+                        <button>
+                            <selectedcontent></selectedcontent>
+                        </button>
+
+                        <option value="auto">   Otomatik </option>
+                        <option value="dark">   Açık     </option>
+                        <option value="light">  Kapalı   </option>
+                    </select>
+
+                </td>
+            </tr>
+            <tr id="setrings_grup_for_delclass">
+                <td>
+                    <div>Sınıf sil</div>
+                    <select likey-be="select">
+                        <button>
+                            <selectedcontent></selectedcontent>
+                        </button>
+                        <option value=""></option>
+                    </select>
+                    <button likey-be="select" onclick="ManageSetrings_grup_for_delclassButton('delete')">Sil</button>
+
+                </td>
+            </tr>
+            <tr id="setrings_grup_for_delstudent">
+                <td>
+                    <div>Öğrenci sil</div>
+                    <select likey-be="select" onchange="Managesetrings_grup_for_delstudentButton('rinit','student')">
+                        <button>
+                            <selectedcontent></selectedcontent>
+                        </button>
+                    
+                        <option value="">Sınıf Seçiniz</option>
+
+                    </select>
+                    <select likey-be="select">
+                        <button>
+                            <selectedcontent></selectedcontent>
+                        </button>
+                    
+                        <option value="">Öğrenci Seçiniz</option>
+
+                    </select>
+                    <button likey-be="select" onclick="Managesetrings_grup_for_delstudentButton('delete','student')">Sil</button>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Transfer dosyası oluştur</div>
+                    <button onclick="transferDosyasiIndir()" likey-be="select">
+                        Oluştur
+                    </button>
+
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Transfer dosyası yükle</div>
+                    <button onclick="transferDosyasiYukle()" likey-be="select">
+                        Yükle
+                    </button>
+
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Bütün herşeyi sil</div>
+                    <button onclick="delAllBtn()" likey-be="select">
+                        Herşeyi Sil
+                    </button>
+
+
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+
+    <script src="setrings.js"></script>
+
+</body>
+</html>

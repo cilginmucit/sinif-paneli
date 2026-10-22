@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr" >
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../maincss.css">
+    <link rel="stylesheet" href="Wcssforplaceholder.css">
+</head>
+<body>
+
+    <div class="placeholder">
+
+        <div class="placeholder_text">
+            <h1>Hiçbir sınf yok</h1>
+            <p>Sol taraftaki + düğmesine basarak ilk sınıfınızı oluşturun. <br> okul çok boş gibi :)</p>
+
+        </div>
+    </div>
+
+    <script>
+        function updateTheme(){
+            const theme = window.top.document.documentElement.getAttribute("theme");
+
+            if (theme === null){
+                document.documentElement.removeAttribute("theme");
+            }else{
+                document.documentElement.setAttribute("theme",theme);
+            }
+        }
+
+        updateTheme();
+
+        new MutationObserver(updateTheme).observe(
+            window.top.document.documentElement,
+            {
+                attributes:true,
+                attributeFilter:["theme"]
+            }
+        );
+    </script>
+
+</body>
+</html>

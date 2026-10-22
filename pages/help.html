@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr" >
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../maincss.css">
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+    </style>
+</head>
+<body>
+
+
+	<div class="students" id="help_pagecontent">
+		<div>
+			Sınıf ve öğrenci
+			<details open>
+				<summary>Öğrenci nasıl eklenir?</summary>
+				Öğrenci eklemek için üstteki kutuya öğrencinin adını yazıp Ekle düğmesine basın.<br>
+				Aynı isimde bir öğrenci zaten varsa yeni kayıt oluşturulmaz; mevcut öğrenci listede vurgulanır (gerekirse liste kaydırılır)
+			</details>
+			<details>
+				<summary>Sınıf, öğrenci... nasıl silinir?</summary>
+				<ul>
+					<li>
+						Sınıfları silmek için iki yöntem vardır:
+						<ul>
+							<li><a href="#genel_yöntem_for_del">Genel yöntemde</a> belirtildiği gibi ilgili tuşu basılı tutarak silmek istediğiniz sınıfa tıklayın.</li>
+							<li>Ayarlar bölümüne girin, silmek istediğiniz sınıfı seçin ve Sil düğmesine basın.</li>
+						</ul>
+					</li>
+					<li>
+						Öğrencileri silmek için üç yöntem vardır:
+						<ul>
+							<li><a href="#genel_yöntem_for_del">Genel yöntemde</a> belirtildiği gibi ilgili tuşu basılı tutarak silmek istediğiniz öğrenciye tıklayın.</li>
+							<li>Öğrencinin bulunduğu sınıfı açın ve öğrencinin yanındaki çöp kutusu simgesine tıklayın.</li>
+							<li>Ayarlar bölümüne girin, önce sınıfı, ardından silmek istediğiniz öğrenciyi seçin ve Sil düğmesine basın.</li>
+						</ul>
+					</li>
+					<li>
+						Ödevler
+						<ul>
+							<li>Ödevi yalnızca bir öğrenciden silmek için <a href="#genel_yöntem_for_del">genel yöntemi</a> uygulayabilirsiniz.</li>
+							<li>Ödevi tüm öğrencilerden silmek için <div class="key">Alt</div> veya <div class="key">AltGr</div> tuşunu basılı tutarak <a href="#genel_yöntem_for_del">genel yöntemi</a> uygulayabilirsiniz.</li>
+							<li><a href="#Odevler_bolummu">Ödevler</a> hakındaki diğer detaylar <a href="#Odevler_bolummu">Ödevler</a> bölümünde</li>
+						</ul>
+					</li>
+					<li id="genel_yöntem_for_del" >
+						Genel yöntem:&nbsp;<div class="key">Delete</div>&nbsp;veya&nbsp;<div class="key">Backspace</div>&nbsp;tuşuna basılı tutarken silmek istediğiniz öğeye tıklayın.
+					</li>
+					<li>
+						Not: eğer önemli bişeyse doğrulama isteyebilir
+					</li>
+				</ul>
+			</details>
+			<details>
+				<summary>Sınıflar arasında nasıl geçiş yaparım?</summary>
+				Sol menüdeki sınıf adına tıklayarak sınıflar arasında geçiş yapabilirsiniz (bunu açıklamak zorunda kaldığıma inanmak istemiyorum)
+			</details>
+			
+		</div>
+		<div id="Odevler_bolummu">
+			Ödevler
+			<details>
+				<summary>Ödev ekleme</summary>
+				<ul>
+					<li>Tüm sınıfa ödev eklemek için öğrenci listesinin sağındaki uzun + düğmesine basın.</li>
+					<li>Yalnızca bir öğrenciye ödev eklemek için öğrencinin kendi satırındaki + düğmesini kullanın.</li>
+					<li>Varsayılan olarak <div class="key">−</div> yapılır</li>
+				</ul>
+			</details>
+			<details>
+				<summary>Mevcut ödev başka bir öğrenciye nasıl atanır?</summary>
+				<div class="key">Alt</div> veya <div class="key">AltGr</div> tuşunu basılı tutarak öğrencinin satırındaki ilgili ödevin boş kutusuna tıklayın.
+			</details>
+			<details open>
+				<summary>Ödevin durumu nasıl değiştirilir?</summary>
+				Ödevin durumunu değiştirmek için üzerine tıklayın. Her tıklamada durum <div class="key">−</div> → <div class="key">Y</div> → <div class="key">+</div>  sırasıyla değişir; ardından başa döner.
+			</details>
+			<details>
+				<summary>Ödevin adını ve tarihini görme</summary>
+				Fareyi ilgili ödev kutusunun üzerine getirdiğinizde açılan bilgi kutusunda ödevin adı ve tarihi gösterilir.
+			</details>
+			<details>
+				<summary>Ekrana sığmayan ödevlere ulaşma</summary>
+				Fare ödevlerin üzerindeyken tekerleği yukarı veya aşağı çevirerek ödevleri yatay kaydırabilirsiniz (Ekrana da bir yere kadar sığıyor tabii)
+			</details>
+			<details>
+				<summary>Ödevi silme</summary>
+				<ul>
+					<li>Ödevi yalnızca bir öğrenciden silmek için <a href="#genel_yöntem_for_del">genel silme yöntemi</a> uygulayabilirsiniz.</li>
+					<li>Ödevi tüm öğrencilerden silmek için <div class="key">Alt</div> veya <div class="key">AltGr</div> tuşunu basılı tutarak <a href="#genel_yöntem_for_del">genel silme yöntemini</a> uygulayabilirsiniz.</li>
+					<li>Ödev, tanımlı olduğu son öğrenciden de silindiğinde tamamen kaldırılır.</li>
+				</ul>
+			</details>
+		</div>
+		<div>
+			Davranışlar
+			<details>
+				<summary>Normal / ile kırmızı / arasındaki fark nedir?</summary>
+				<ul>
+					<li>Normal / silinebilir; daha hafif, affedilebilir davranışlar için kullanılır.</li>
+					<li>Kırmızı / silinemez; daha ciddi, affedilemez davranışlar için kullanılır.</li>
+				</ul>
+			</details>
+
+			<details>
+				<summary>Normal ve kırmızı / işaretlerinin sayısını nasıl görebilirim?</summary>
+				Fareyi öğrencinin / işaretlerinin üzerine getirdiğinizde normal ve kırmızı / sayıları ayrı ayrı gösterilir.
+			</details>
+			
+			
+		</div>
+		<div>
+			Ders programı
+			<details>
+				<summary>henüz geliştiriliyor ve hazır değil</summary>
+				henüz geliştiriliyor ve hazır değil :(
+			</details>
+			
+		</div>
+		<div>
+			Verilerin saklanması
+			<details>
+				<summary>Veriler nerede saklanır?</summary>
+				<ul>
+					<li>Veriler tarayıcınızın localStorage alanında saklanır.</li>
+					<li>Tarayıcı veya cihaz değiştirmek için <a href="#transfer_dosyası_bolummu">transfer dosyası</a> oluşturmanız gerekir.</li>
+				</ul>
+			</details>
+			<details open>
+				<summary>Önemli uyarı</summary>
+				Tarayıcı değiştirmeseniz bile haftada bir <a href="#transfer_dosyası_bolummu">transfer dosyası</a> oluşturarak yedek almanızı öneririz. <br>
+				Tarayıcınız temizlik yapmak için veya başka nedenlerle kayıtlarınızı silinebilir.
+			</details>
+			<details>
+				<summary>Her şeyi sıfırlamak istiyorum</summary>
+				Ayarlar bölümündeki Her şeyi sil düğmesine basarak tüm sınıfları, öğrencileri, kayıtları ve ayarları silebilirsiniz.<br>
+				Uyarı: Bu işlem geri alınamaz.
+			</details>
+		</div>
+		<div id="transfer_dosyası_bolummu">
+			Transfer dosyaları
+			<details>
+				<summary>Transfer dosyası nasıl oluşturulur?</summary>
+				Ayarlar bölümündeki Transfer dosyası oluştur seçeneğine basarak dosyayı oluşturup indirebilirsiniz.
+			</details>
+
+			<details>
+				<summary>Transfer dosyası nasıl yüklenir?</summary>
+				Ayarlar bölümündeki Transfer dosyası yükle seçeneğine basarak dosyanızı seçip yükleyebilirsiniz.
+			</details>
+
+		</div>
+	</div>
+	<script>
+		document.querySelectorAll('#help_pagecontent a[href^="#"]').forEach(link => {
+			link.addEventListener("click", event => {
+				if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+			
+				const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+			
+				if (!target) return;
+			
+				let parent = target;
+			
+				while (parent) {
+					if (parent.tagName === "DETAILS") {
+						parent.open = true;
+					}
+				
+					parent = parent.parentElement;
+				}
+			
+				const rect = target.getBoundingClientRect();
+				const visible = rect.top >= 0 && rect.bottom <= document.documentElement.clientHeight;
+			
+				if (visible) {
+					event.preventDefault();
+				
+					if (location.hash !== link.hash) {
+						history.pushState(null, "", link.hash);
+					}
+				}
+			
+				target.style.animation = "none";
+				void target.offsetWidth;
+				target.style.animation = "hedef_vurgusu 4s ease-in-out";
+			});
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr" >
+	<head>
+
+		<link rel="icon" href="data:,">
+		<meta charset="UTF-8">
+		<title>Sınıf Paneli</title>
+		<link rel="stylesheet" href="maincss.css">
+
+
+
+	</head>
+
+	<body>
+		<div id="alertsys">
+			<div class="alert">
+				<div class="alert-message"></div>
+
+				<input class="alert-input" type="text">
+
+				<div class="alert-buttons">
+				    <button class="alert-cancel" onclick="endalerd(false)">Vazgeç</button>
+				    <button class="alert-ok" onclick="endalerd(true)">Tamam</button>
+				</div>
+			</div>
+		</div>
+		<div id="sinif" class="sidebars">
+			<button  onclick="minimize(this)"            class="sizecontrolbtn" dontremoveme>☰</button>
+			<div id="siniflar_yeri">
+
+			</div>
+			<button onclick="add_class()"                class="DoNotFocusMe"   dontremoveme>+</button>
+			<button onclick="changeViewtosetrings(this)" class="settings"       dontremoveme>⚙</button>
+		</div>
+
+		<div id="ictaraf">
+
+			<div id="islev" class="sidebars">
+				<button class="sizecontrolbtn" onclick="minimize(this)" >☰</button>
+				<button onclick="changeView('genel',this)"              >Genel Bakış           </button>
+				<button onclick="changeView('davranislar',this)"        >Davranış              </button>
+				<button onclick="changeView('odevler',this)"            >Ödevler               </button>
+				<button onclick="changeView('rastgele',this)"           >Rasgele öğrenci seçici</button>
+			</div>
+
+			<iframe id="viewer">
+			</iframe>
+
+		</div>
+
+		<!-- load save embed -->
+		<script>
+		    function save(key, value) {
+		        localStorage.setItem(key, JSON.stringify(value));
+		    }
+		
+		    function load(key) {
+		        const data = localStorage.getItem(key);
+			
+		        if (data === null) {
+		            throw new Error(`localStorage içinde "${key}" bulunamadı.`);
+		        }
+			
+		        return JSON.parse(data);
+		    }
+		</script>
+
+		<!-- styleheper embed -->
+		<script>
+			function focus_element(frame_id,me) {
+			    const elemanlar = document.getElementById(frame_id).children;
+
+			    let exeption = false
+
+			    if (me.dataset.selected == "true"){
+			        exeption = true
+			    }
+			
+			
+			    for (const eleman of elemanlar) {
+			        if (eleman != me){
+			            eleman.style.backgroundColor = "";
+			            eleman.dataset.selected = false
+			        }
+				
+				
+			    }
+			
+			    if ((!me.classList.contains("DoNotFocusMe") ) && ( !exeption)){
+				
+				
+			        const originalColor = getComputedStyle(me).backgroundColor;
+				
+			        me.style.backgroundColor = `
+			        color-mix(
+			            in srgb,
+			                ${originalColor} calc(100% - var(--focus-mix-ratio)),
+			                var(--focus-mix-color) var(--focus-mix-ratio)
+			                )
+			            `;
+			        me.dataset.selected = true
+				
+				
+			    }
+			    document.querySelectorAll("button").forEach(button => {
+			    [...button.childNodes].forEach(node => {
+			        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+			            const span = document.createElement("span");
+			            span.textContent = node.textContent;
+			            node.replaceWith(span);
+			        }
+			    });
+			});
+			}
+
+			const alertBaseDPR = window.devicePixelRatio;
+
+			function updateAlertScale() {
+			    const browserZoom = window.devicePixelRatio / alertBaseDPR;
+			
+			    document.querySelectorAll("#alertsys .alert").forEach(alert => {
+			        alert.style.transform = `scale(${1 / browserZoom})`;
+			    });
+			}
+
+			window.addEventListener("resize", updateAlertScale);
+			updateAlertScale();
+
+		</script>
+
+		<script>
+			let class_delete_mode;
+			let classes;
+			let was_setringns_opend = false;
+			let selected_fn;
+			let selected_class;
+			let setrings;
+
+			try {
+				setrings = load("setrings");
+				settings_changed()
+			} catch {
+				setrings = {};
+				save("setrings",setrings)
+			}
+
+			try {
+				classes = load("classes");
+			} catch {
+				classes = [];
+			}
+
+			for (const key in classes) {
+				addToclaslist(classes[key]);
+			}
+
+			function class_key(text) {
+				return text
+			}
+
+			async function add_class(init = false) {
+				const text = await beter_alert("prompt str", "Sınıf adı giriniz");
+				
+				if (text === null) {
+					return;
+				}
+			
+				const displayname = text.trim();
+			
+				if (displayname === "") {
+					await beter_alert("alert", "Sınıf adı boş olamaz");
+					return;
+				}
+			
+				const key = class_key(displayname);
+			
+				for (const item of classes) {
+					if (class_key(item) === key) {
+						await beter_alert("alert", "Bu sınıf zaten var");
+						return;
+					}
+				}
+			
+				classes.push(displayname);
+				save("classes", classes);
+			
+				const btn = addToclaslist(displayname);
+
+				
+			}
+
+			function addToclaslist(classname) {
+				const frame = document.getElementById("sinif").children[1];
+			
+				const btn = document.createElement("button");
+				btn.textContent = classname;
+				btn.onclick = () => select_class(classname,btn);
+				btn.id = `class_name_${classname}`
+				const target = frame.children[frame.children.length - 0];
+			
+				frame.insertBefore(btn, target);
+
+				return btn
+			}
+
+			document.addEventListener("keydown", (event) => {
+				if (event.key === "Delete" || event.key === "Backspace") {
+					class_delete_mode = true;
+					document.getElementById("sinif").classList.add("get_redy_for_remove")
+				}
+			});
+
+			document.addEventListener("keyup", (event) => {
+				if (event.key === "Delete" || event.key === "Backspace") {
+					class_delete_mode = false;
+					document.getElementById("sinif").classList.remove("get_redy_for_remove")
+				}
+			});
+
+			const pages = {
+                placeHolder  :   "pages/place-holder-for-init.html",
+				genel        :   "pages/genelbakis.html",
+				davranislar  :   "pages/davranislar.html",
+				odevler      :   "pages/odevler.html",
+				rastgele     :   "pages/rastgele-ogrenci.html",
+				ayarlar      :   "pages/setrings.html",
+				help         :   "pages/help.html"
+			}
+
+			function select_class(text,me) {
+				if (was_setringns_opend ){
+					was_setringns_opend = false
+					try{
+						selected_fn.click()
+					}
+					catch{
+						changeView("genel",document.getElementById("islev").children[1])
+					}
+					
+				}
+				if (class_delete_mode){
+					delClass(text)
+					return
+				}
+				selected_class = me
+				focus_element("sinif",me)
+				focus_element("siniflar_yeri",me)
+
+				save("selected_class", text);
+
+				save("class_change_signal", Date.now());
+			}
+
+			async function delClass(text) {
+				class_delete_mode = false
+				if (!await beter_alert("confirm", "Bu işlem geri alınamaz!\nDevam etmek istediğinizden emin misiniz?")){
+					return
+				}
+				const key = text
+				const i = classes.findIndex(item => class_key(item) === key);
+				if (i !== -1) {
+					classes.splice(i, 1);
+				}
+			
+				save("classes", classes);
+
+
+				localStorage.removeItem(`${key}`);
+
+				let btn = document.getElementById(`class_name_${text}`)
+				btn.remove();
+			
+
+			}
+
+			function changeView(pageName, me,focus_elementgrup = "islev",bypass_chek = false) {
+                if (classes.length === 0 && bypass_chek === false) {
+                	return
+                }
+				if (was_setringns_opend ){
+					was_setringns_opend = false
+					try{
+						selected_class.click()
+					} catch {
+
+					}
+				}
+				focus_element(focus_elementgrup,me)
+                
+				const viewer = document.getElementById("viewer");
+				const url = new URL(pages[pageName], window.location.href).href
+				viewer.contentWindow.location.replace(url)
+				selected_fn = me
+			}
+
+			/** @param {HTMLElement} me*/
+			function minimize(me){
+				let bar = me.parentElement
+				bar.classList.toggle("mini_mode")
+			}
+
+
+			function changeViewtosetrings(me) {
+				was_setringns_opend = true
+				focus_element("sinif",me)
+				focus_element("islev",me)
+				focus_element("siniflar_yeri",me)
+				const viewer = document.getElementById("viewer");
+				const url = new URL(pages["ayarlar"], window.location.href).href
+				viewer.contentWindow.location.replace(url)
+			
+			}
+
+			window.addEventListener("storage", (event) => {
+				if (event.key === "settings_change_signal") {
+					settings_changed();
+				}
+			});
+
+			function settings_changed() {
+				const root = document.documentElement;
+				setrings = load("setrings");
+
+				if (setrings["darktheam"] !== "auto" && setrings["darktheam"] !== undefined){
+					root.setAttribute("theme",setrings["darktheam"] );
+				}else{
+					root.removeAttribute("theme");
+				}
+					
+				
+			}
+			function openinitscr() {
+				const viewer = document.getElementById("viewer");
+				viewer.src = pages["placeHolder"];
+
+			}
+            try{
+                select_class(load("selected_class"),document.getElementById(`class_name_${load("selected_class")}`))
+                changeView("genel",document.getElementById("islev").children[1])
+                
+            } catch {
+                save("selected_class","")
+				openinitscr()
+            }
+			// in dev changeView("help",document.getElementById("islev").children[1])
+                
+			function oto_sizer_formenu(){
+				let genislik = window.innerWidth
+
+				let islev = document.getElementById("islev")
+				let sinif = document.getElementById("sinif")
+    			if (genislik <= 950) {
+    			    islev.classList.add      ("mini_mode")
+					sinif.classList.add      ("mini_mode")
+    			} 
+				else if (genislik <= 1250) {
+					islev.classList.add      ("mini_mode")
+					sinif.classList.remove   ("mini_mode")
+    			} 
+				else {
+    			    islev.classList.remove   ("mini_mode")
+					sinif.classList.remove   ("mini_mode")
+    			}
+			}
+			window.addEventListener("resize", oto_sizer_formenu);
+			oto_sizer_formenu()
+
+			let alert_done = false;
+			let alert_return;
+			let alert_mode;
+
+			function wait_until_true() {
+			    return new Promise(resolve => {
+			        let check = setInterval(() => {
+			            if (alert_done) {
+			                clearInterval(check);
+			                resolve();
+			            }
+			        }, 10);
+			    });
+			}
+
+			
+
+			async function beter_alert(mode, message = "") {
+			
+			    let alertsys    = document.getElementById("alertsys");
+			    let alerttxt    = alertsys.querySelector(".alert-message");
+			    let alertinput  = alertsys.querySelector(".alert-input");
+			    let alertcancel = alertsys.querySelector(".alert-cancel");
+			    let alertok     = alertsys.querySelector(".alert-ok");
+			
+			    alert_done = false;
+			    alert_return = undefined;
+			    alert_mode = mode;
+			
+			    alerttxt.textContent = message;
+			    alertinput.value = "";
+			
+			
+			
+			    if (mode === "prompt str")
+			    {
+			        alertinput.style.display = "block";
+			        alertcancel.style.display = "block";
+				
+			        alertinput.type = "text";
+			        alertinput.inputMode = "text";
+			        alertinput.onbeforeinput = null;
+			    }
+			    else if (mode === "prompt int")
+			    {
+			        alertinput.style.display = "block";
+			        alertcancel.style.display = "block";
+				
+			        alertinput.type = "text";
+			        alertinput.inputMode = "numeric";
+				
+			        alertinput.onbeforeinput = (event) => {
+			            if (
+			                event.data !== null &&
+			                !/^\d+$/.test(event.data)
+			            ) {
+			                event.preventDefault();
+			            }
+			        };
+			    }
+			    else if (mode === "alert")
+			    {
+			        alertinput.style.display = "none";
+			        alertcancel.style.display = "none";
+				
+			        alertinput.onbeforeinput = null;
+			    }
+			    else if (mode === "confirm")
+			    {
+			        alertinput.style.display = "none";
+			        alertcancel.style.display = "block";
+				
+			        alertinput.onbeforeinput = null;
+			    }
+			    else
+			    {
+			        throw new Error("Geçersiz alert modu: " + mode);
+			    }
+			
+			
+			
+			    alertsys.classList.add("aktif");
+
+			    if (mode === "prompt str" || mode === "prompt int") {
+			        alertinput.focus();
+			    }
+			    else {
+			        alertok.focus();
+			    }
+
+			    alertsys.onkeydown = (event) => {
+			        if (event.key === "Escape") {
+			            event.preventDefault();
+			            endalerd(false);
+			        }
+			        else if (event.key === "Enter") {
+			            event.preventDefault();
+			            endalerd(true);
+			        }
+			    };
+			
+			    await wait_until_true();
+			
+			    alertsys.classList.remove("aktif");
+			    alertsys.onkeydown = null;
+			
+			
+			
+			    if (mode === "prompt str")
+			    {
+			        if (alert_return === false) {
+			            return null;
+			        }
+				
+			        return alertinput.value;
+			    }
+			    else if (mode === "prompt int")
+			    {
+			        if (alert_return === false) {
+			            return null;
+			        }
+				
+			        return Number(alertinput.value);
+			    }
+			    else if (mode === "alert")
+			    {
+			        return undefined;
+			    }
+			    else if (mode === "confirm")
+			    {
+			        return alert_return;
+			    }
+			}
+
+
+			function endalerd(parametre){
+				alert_return = parametre
+				alert_done = true;
+			}
+			
+		</script>
+		
+	</body>
+</html>

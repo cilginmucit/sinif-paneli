@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../maincss.css">
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+    </style>
+</head>
+<body>
+
+    <div id="inputboxfornevporsen">
+        <input id="inputtext" type="text">
+        <button class="addbuten" likey-be="button" onclick="addFrom_button()">Ekle</button>
+    </div>
+
+    <table class="students" id="table_in_Random_student">
+        <tbody>
+            <tr>
+                <td  id = "row_in_table_in_Random_student_lucy_porsen">
+                    <div>Seçilen :</div>
+                    <button class="addbuten" likey-be="button" onclick="random_student_btn()">Seç</button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="students" id="table_in_GenelBakis">
+        <tbody>
+
+        </tbody>
+    </table>
+
+
+
+    <script src="students.js"></script>
+
+</body>
+</html>

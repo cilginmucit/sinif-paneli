@@ -12,6 +12,7 @@
 	</head>
 
 	<body>
+
 		<div id="alertsys">
 			<div class="alert">
 				<div class="alert-message"></div>
@@ -24,23 +25,41 @@
 				</div>
 			</div>
 		</div>
+
 		<div id="sinif" class="sidebars">
-			<button  onclick="minimize(this)"            class="sizecontrolbtn" dontremoveme>☰</button>
+			<button  onclick="minimize(this)"  class="sizecontrolbtn"          dontremoveme>☰</button>
 			<div id="siniflar_yeri">
 
 			</div>
-			<button onclick="add_class()"                class="DoNotFocusMe"   dontremoveme>+</button>
-			<button onclick="changeViewtosetrings(this)" class="settings"       dontremoveme>⚙</button>
+			<button onclick="add_class()"      class="DoNotFocusMe"            dontremoveme>+</button>
+
+			<div class="settings">
+						<button class="a3dotbutons inside1 ">⋯</button>
+				<div id="inside1div" class="inside1">
+						<button  class="a3dotbutons inside2 ">⋯</button>
+				<div id="inside2div" class="inside2">
+						<button  class="a3dotbutons inside3 ">⋯</button>
+				<div id="inside3div" class="inside3">
+							<button onclick="changeViewtosetrings(this,'help')" class="settings helpbtn"   dontremoveme></button>
+				</div>
+							<button onclick="changeViewtosetrings(this,'dersprog')" class="settings dersprog"  dontremoveme></button>
+				</div>
+							<button onclick="changeViewtosetrings(this)" class="settings frsettingsbtn"  dontremoveme></button>
+				
+				</div>
+				
+			</div>
+			
 		</div>
 
 		<div id="ictaraf">
 
 			<div id="islev" class="sidebars">
-				<button class="sizecontrolbtn" onclick="minimize(this)" >☰</button>
-				<button onclick="changeView('genel',this)"              >Genel Bakış           </button>
-				<button onclick="changeView('davranislar',this)"        >Davranış              </button>
-				<button onclick="changeView('odevler',this)"            >Ödevler               </button>
-				<button onclick="changeView('rastgele',this)"           >Rasgele öğrenci seçici</button>
+				<button class="sizecontrolbtn" onclick="minimize(this)"                  >☰                     </button>
+				<button                        onclick="changeView('genel',this)"        >Genel Bakış           </button>
+				<button                        onclick="changeView('davranislar',this)"  >Davranış              </button>
+				<button                        onclick="changeView('odevler',this)"      >Ödevler               </button>
+				<button                        onclick="changeView('rastgele',this)"     >Rasgele öğrenci seçici</button>
 			</div>
 
 			<iframe id="viewer">
@@ -67,11 +86,13 @@
 
 		<!-- styleheper embed -->
 		<script>
+					
+
 			function focus_element(frame_id,me) {
 			    const elemanlar = document.getElementById(frame_id).children;
 
 			    let exeption = false
-
+				let originalColor
 			    if (me.dataset.selected == "true"){
 			        exeption = true
 			    }
@@ -88,8 +109,12 @@
 			
 			    if ((!me.classList.contains("DoNotFocusMe") ) && ( !exeption)){
 				
-				
-			        const originalColor = getComputedStyle(me).backgroundColor;
+					if (me.dataset.originalColor === undefined){
+						originalColor = getComputedStyle(me).backgroundColor;
+					}else{
+						originalColor = me.dataset.originalColor 
+					}
+			        
 				
 			        me.style.backgroundColor = `
 			        color-mix(
@@ -99,7 +124,7 @@
 			                )
 			            `;
 			        me.dataset.selected = true
-				
+					me.dataset.originalColor = originalColor
 				
 			    }
 			    document.querySelectorAll("button").forEach(button => {
@@ -129,13 +154,15 @@
 		</script>
 
 		<script>
+			let developer = false;
 			let class_delete_mode;
 			let classes;
 			let was_setringns_opend = false;
 			let selected_fn;
 			let selected_class;
 			let setrings;
-
+			let emtyDocelementfornullfocusfocusing = document.createElement("div")
+			
 			try {
 				setrings = load("setrings");
 				settings_changed()
@@ -216,7 +243,7 @@
 					document.getElementById("sinif").classList.remove("get_redy_for_remove")
 				}
 			});
-
+			
 			const pages = {
                 placeHolder  :   "pages/place-holder-for-init.html",
 				genel        :   "pages/genelbakis.html",
@@ -224,13 +251,19 @@
 				odevler      :   "pages/odevler.html",
 				rastgele     :   "pages/rastgele-ogrenci.html",
 				ayarlar      :   "pages/setrings.html",
-				help         :   "pages/help.html"
+				help         :   "pages/help.html",
+				dersprog     :	 "pages/ders prog indev.html"
 			}
-
+			if(developer){
+				pages["dersprog"] = "pages/ders prog.html"
+			}
 			function select_class(text,me) {
 				if (was_setringns_opend ){
 					was_setringns_opend = false
 					try{
+						focus_element("inside3div",emtyDocelementfornullfocusfocusing)
+						focus_element("inside2div",emtyDocelementfornullfocusfocusing)
+						focus_element("inside1div",emtyDocelementfornullfocusfocusing)
 						selected_fn.click()
 					}
 					catch{
@@ -243,7 +276,8 @@
 					return
 				}
 				selected_class = me
-				focus_element("sinif",me)
+
+				focus_element("sinif",emtyDocelementfornullfocusfocusing)
 				focus_element("siniflar_yeri",me)
 
 				save("selected_class", text);
@@ -280,11 +314,20 @@
 				if (was_setringns_opend ){
 					was_setringns_opend = false
 					try{
+						focus_element("inside3div",emtyDocelementfornullfocusfocusing)
+						focus_element("inside2div",emtyDocelementfornullfocusfocusing)
+						focus_element("inside1div",emtyDocelementfornullfocusfocusing)
 						selected_class.click()
+						
+					
 					} catch {
 
 					}
 				}
+
+				
+				
+                
 				focus_element(focus_elementgrup,me)
                 
 				const viewer = document.getElementById("viewer");
@@ -300,13 +343,19 @@
 			}
 
 
-			function changeViewtosetrings(me) {
+			function changeViewtosetrings(me,page="ayarlar") {
 				was_setringns_opend = true
-				focus_element("sinif",me)
-				focus_element("islev",me)
-				focus_element("siniflar_yeri",me)
+				focus_element("sinif",emtyDocelementfornullfocusfocusing)
+				focus_element("islev",emtyDocelementfornullfocusfocusing)
+
+				focus_element("inside3div",me)
+				focus_element("inside2div",me)
+				focus_element("inside1div",me)
+
+				focus_element("siniflar_yeri",emtyDocelementfornullfocusfocusing)
+				
 				const viewer = document.getElementById("viewer");
-				const url = new URL(pages["ayarlar"], window.location.href).href
+				const url = new URL(pages[page], window.location.href).href
 				viewer.contentWindow.location.replace(url)
 			
 			}
@@ -323,12 +372,15 @@
 
 				if (setrings["darktheam"] !== "auto" && setrings["darktheam"] !== undefined){
 					root.setAttribute("theme",setrings["darktheam"] );
+					
 				}else{
 					root.removeAttribute("theme");
+					
 				}
 					
 				
 			}
+
 			function openinitscr() {
 				const viewer = document.getElementById("viewer");
 				viewer.src = pages["placeHolder"];
@@ -342,8 +394,7 @@
                 save("selected_class","")
 				openinitscr()
             }
-			// in dev changeView("help",document.getElementById("islev").children[1])
-                
+ 
 			function oto_sizer_formenu(){
 				let genislik = window.innerWidth
 
